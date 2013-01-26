@@ -1,0 +1,12 @@
+{application, kellin,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { kellin_app, []}},
+  {env, []}
+ ]}.
