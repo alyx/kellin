@@ -31,3 +31,12 @@ handle_now_playing(User, Data) ->
 
 send_irc(Sock, Data) ->
 	gen_tcp:send(Sock, Data ++ "\r\n").
+
+parse_irc_string(Sock, [_, "376"|_]) ->
+	send_irc(Sock, "JOIN #alyx").
+
+parse_irc_string(Sock, ["PING"|Rest]) ->
+	send_irc(Sock, "PONG " ++ Rest);
+
+parse_irc_string(_, _) ->
+	0.
