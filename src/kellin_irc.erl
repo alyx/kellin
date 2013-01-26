@@ -5,8 +5,7 @@
 connect(Host, Port) ->
 	{ok, Sock} = gen_tcp:connect(Host, Port, [{packet, line}]),
 %	gen_tcp:send(Sock, "USER " ++ kellin_conf:nickname ++ )
-	send_irc(Sock, "USER " ++ kellin_conf:user ++ " * * " ++ 
-		kellin_conf:whois),
+	send_irc(Sock, "USER " ++ kellin_conf:user ++ " * * " ++ kellin_conf:whois),
 	send_irc(Sock, "NICK " ++ kellin_conf:nickname),
 	loop(Sock).
 
@@ -26,7 +25,7 @@ loop(Sock) ->
 	end.
 
 handle_now_playing(User, Data) ->
-	sned_irc("PRIVMSG #alyx :" ++ User ++ " is now playing: "
+	send_irc(Sock, "PRIVMSG #alyx :" ++ User ++ " is now playing: "
 		++ Data).
 
 send_irc(Sock, Data) ->
