@@ -4,7 +4,6 @@
 
 connect(Host, Port) ->
 	{ok, Sock} = gen_tcp:connect(Host, Port, [{packet, line}]),
-%	gen_tcp:send(Sock, "USER " ++ kellin_conf:nickname ++ )
 	send_irc(Sock, "USER " ++ kellin_conf:user ++ " * * " ++ kellin_conf:whois),
 	send_irc(Sock, "NICK " ++ kellin_conf:nickname),
 	loop(Sock).
@@ -16,15 +15,14 @@ loop(Sock) ->
 				loop(Sock);
 
 			{np, User, Data} ->
-				handle_now_playing(User, Data),
+				handle_now_playing(Sock, User, Data),
 				loop(Sock);
 			quit ->
-				io:format("[~w] Received quit message.~n"),
 				gen_tcp:close(Sock),
 				exit(stopped)
 	end.
 
-handle_now_playing(User, Data) ->
+handle_now_playing(Sock, User, Data) ->
 	send_irc(Sock, "PRIVMSG #alyx :" ++ User ++ " is now playing: "
 		++ Data).
 
@@ -35,7 +33,7 @@ parse_irc_string(Sock, [_, "376"|_]) ->
 	send_irc(Sock, "JOIN #alyx").
 
 parse_irc_string(Sock, ["PING"|Rest]) ->
-	send_irc(Sock, "PONG " ++ Rest);
+	send_irc(Sock, "PONG " ++ Rest).
 
 parse_irc_string(_, _) ->
 	0.
